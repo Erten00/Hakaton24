@@ -6,6 +6,7 @@ import random
 app = Flask(__name__)
 app.secret_key = "tajna_kljucccc"  # Neophodno za rad sesija
 
+
 # Konfigurišemo Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -66,53 +67,70 @@ def log_session_data():
     print(f"Session data: {dict(session)}")
 
 
+
 # Ruta za Quiz
 @app.route('/quiz', methods=['GET', 'POST'])
 def quiz():
-    # Inicijalizacija ili resetovanje sesije za novi kviz
-    if 'quiz_questions' not in session or request.method == 'GET':
-        # Fetch 10 questions at the start of the quiz
-        response = requests.get('https://opentdb.com/api.php?amount=10&type=multiple')
-        if response.status_code != 200:
+    # Ensure a valid session token exists
+    if 'api_token' not in session:
+        token_response = requests.get('https://opentdb.com/api_token.php?command=request')
+        if token_response.status_code == 200:
+            session['api_token'] = token_response.json().get('token')
+        else:
+            flash('Failed to initialize quiz session. Try again later.')
+            return redirect(url_for('home'))
+
+    # Initialize quiz questions if not already present
+    if 'quiz_questions' not in session or not session.get('quiz_questions'):
+        token = session['api_token']
+        quiz_response = requests.get(f'https://opentdb.com/api.php?amount=10&type=multiple&token={token}')
+        if quiz_response.status_code != 200 or not quiz_response.json().get('results'):
             flash('Failed to fetch quiz questions. Please try again later.')
             return redirect(url_for('home'))
 
-        data = response.json()
-        if 'results' not in data or not data['results']:
-            flash('No quiz questions available. Please try again later.')
-            return redirect(url_for('home'))
+        quiz_data = quiz_response.json()
 
-        # Prepare the quiz questions
-        quiz_questions = []
-        for question_data in data['results']:
-            # Mix the correct answer with incorrect ones
-            options = question_data['incorrect_answers'] + [question_data['correct_answer']]
+        # Handle token exhaustion (response_code == 4)
+        if quiz_data.get('response_code') == 4:
+            reset_response = requests.get(f'https://opentdb.com/api_token.php?command=reset&token={token}')
+            if reset_response.status_code == 200:
+                flash('Question pool exhausted. Resetting quiz session.')
+                return redirect(url_for('quiz'))
+            else:
+                flash('Failed to reset quiz session. Try again later.')
+                return redirect(url_for('home'))
+
+        # Prepare questions
+        session['quiz_questions'] = []
+        for question in quiz_data['results']:
+            options = question['incorrect_answers'] + [question['correct_answer']]
             random.shuffle(options)
-            
-            quiz_questions.append({
-                'question': question_data['question'],
+            session['quiz_questions'].append({
+                'question': question['question'],
                 'options': options,
-                'correct_answer': question_data['correct_answer']
+                'correct_answer': question['correct_answer']
             })
 
-        # Store quiz questions in session
-        session['quiz_questions'] = quiz_questions
         session['current_question_index'] = 0
         session['correct_count'] = 0
-        session['total_questions'] = 10
+        session['total_questions'] = len(session['quiz_questions'])
+        session.permanent = True
 
-    # If quiz is completed, redirect to results
-    if session['current_question_index'] >= session['total_questions']:
+    # Retrieve current question
+    current_index = session.get('current_question_index', 0)
+    if current_index >= session['total_questions']:
         return redirect(url_for('results'))
 
-    # Get current question
-    current_question = session['quiz_questions'][session['current_question_index']]
+    current_question = session['quiz_questions'][current_index]
 
-    # Handle answer submission
     if request.method == 'POST':
+        # Validate submitted answer
         selected_answer = request.form.get('answer')
-        
-        # Check if answer is correct
+        if not selected_answer:
+            flash('Please select an answer before submitting.')
+            return redirect(url_for('quiz'))
+
+        # Check if the answer is correct
         if selected_answer == current_question['correct_answer']:
             session['correct_count'] += 1
 
@@ -120,18 +138,20 @@ def quiz():
         session['current_question_index'] += 1
         session.modified = True
 
-        # Redirect to next question or results
+        # Redirect to results if quiz is completed
         if session['current_question_index'] >= session['total_questions']:
             return redirect(url_for('results'))
-        
         return redirect(url_for('quiz'))
 
-    # Render current question
-    return render_template('quiz.html', 
-                           question=current_question['question'], 
-                           options=current_question['options'], 
-                           current_question=session['current_question_index'] + 1,
-                           total_questions=session['total_questions'])
+    # Render quiz template
+    return render_template(
+        'quiz.html',
+        question=current_question['question'],
+        options=current_question['options'],
+        current_question=current_index + 1,
+        total_questions=session['total_questions']
+    )
+
 
 
 @app.route('/results')
