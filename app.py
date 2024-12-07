@@ -222,7 +222,7 @@ def scores():
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
-def quiz_home():
+def dashboard():
     # Categories and difficulties for the form
     categories = [
         {"id": 9, "name": "General Knowledge"},
