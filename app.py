@@ -1,33 +1,43 @@
 from flask import Flask, render_template, redirect, url_for, request, flash, session
+from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 import requests
 import random
 
 app = Flask(__name__)
-app.secret_key = "tajna_kljucccc"  # Neophodno za rad sesija
+app.secret_key = "tajna_kljucccc"  # Secret key for session management
 
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///quiz_app.db'  # SQLite database
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-# Konfigurišemo Flask-Login
+# Flask-Login configuration
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login"  # Stranica za preusmeravanje ako korisnik nije prijavljen
+login_manager.login_view = "login"
 
-# Kreiranje "baze podataka" korisnika (u memoriji za primer)
-users = {"erten": {"password": "lozinka"}}
+# Database models
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    scores = db.relationship('Score', backref='user', lazy=True)
 
-# Kreiramo User model koji Flask-Login koristi
-class User(UserMixin):
-    def __init__(self, id):
-        self.id = id
+class Score(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+    total_questions = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-# Loader funkcija za pronalaženje korisnika
+# Flask-Login user loader
 @login_manager.user_loader
 def load_user(user_id):
-    if user_id in users:
-        return User(user_id)
-    return None
+    return User.query.get(int(user_id))
 
-# Ruta za početnu stranicu
+# Home route
 @app.route('/', methods=['GET', 'POST'])
 def home():
     categories = [
@@ -35,26 +45,10 @@ def home():
         {"id": 10, "name": "Entertainment: Books"},
         {"id": 11, "name": "Entertainment: Film"},
         {"id": 12, "name": "Entertainment: Music"},
-        {"id": 13, "name": "Entertainment: Musicals & Theatres"},
-        {"id": 14, "name": "Entertainment: Television"},
-        {"id": 15, "name": "Entertainment: Video Games"},
-        {"id": 16, "name": "Entertainment: Board Games"},
         {"id": 17, "name": "Science & Nature"},
         {"id": 18, "name": "Science: Computers"},
-        {"id": 19, "name": "Science: Mathematics"},
-        {"id": 20, "name": "Mythology"},
         {"id": 21, "name": "Sports"},
-        {"id": 22, "name": "Geography"},
         {"id": 23, "name": "History"},
-        {"id": 24, "name": "Politics"},
-        {"id": 25, "name": "Art"},
-        {"id": 26, "name": "Celebrities"},
-        {"id": 27, "name": "Animals"},
-        {"id": 28, "name": "Vehicles"},
-        {"id": 29, "name": "Entertainment: Comics"},
-        {"id": 30, "name": "Science: Gadgets"},
-        {"id": 31, "name": "Entertainment: Japanese Anime & Manga"},
-        {"id": 32, "name": "Entertainment: Cartoon & Animations"}
     ]
 
     if request.method == 'POST':
@@ -67,43 +61,55 @@ def home():
 
     return render_template('index.html', categories=categories)
 
+# Registration route
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        hashed_password = generate_password_hash(password, method='sha256')
 
-# Ruta za login
-@app.route("/login", methods=["GET", "POST"])
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists!')
+            return redirect(url_for('register'))
+
+        new_user = User(username=username, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('Registration successful! Please log in.')
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+# Login route
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        if username in users and users[username]["password"] == password:
-            user = User(username)
-            login_user(user)
-            flash("Uspešno ste prijavljeni!")
-            return redirect(url_for("home"))
-        else:
-            flash("Neispravno korisničko ime ili lozinka.")
-    return render_template("login.html")
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user = User.query.filter_by(username=username).first()
 
-# Ruta za logout
-@app.route("/logout")
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            flash('Successfully logged in!')
+            return redirect(url_for('quiz'))
+        else:
+            flash('Invalid username or password.')
+
+    return render_template('login.html')
+
+# Logout route
+@app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    flash("Uspešno ste odjavljeni!")
-    return redirect(url_for("home"))
+    flash('Successfully logged out!')
+    return redirect(url_for('home'))
 
-# Ruta za zaštićenu stranicu
-@app.route("/protected")
-@login_required
-def protected():
-    return f"Ovo je zaštićena stranica, {current_user.id}!"
-
-
-@app.before_request
-def log_session_data():
-    print(f"Session data: {dict(session)}")
-
-
+# Quiz route
 @app.route('/quiz', methods=['GET', 'POST'])
+@login_required
 def quiz():
     if 'api_token' not in session:
         token_response = requests.get('https://opentdb.com/api_token.php?command=request')
@@ -122,16 +128,6 @@ def quiz():
             return redirect(url_for('home'))
 
         quiz_data = quiz_response.json()
-
-        if quiz_data.get('response_code') == 4:
-            reset_response = requests.get(f'https://opentdb.com/api_token.php?command=reset&token={token}')
-            if reset_response.status_code == 200:
-                flash('Question pool exhausted. Resetting quiz session.')
-                return redirect(url_for('quiz'))
-            else:
-                flash('Failed to reset quiz session. Try again later.')
-                return redirect(url_for('home'))
-
         session['quiz_questions'] = []
         for question in quiz_data['results']:
             options = question['incorrect_answers'] + [question['correct_answer']]
@@ -167,6 +163,7 @@ def quiz():
 
         if session['current_question_index'] >= session['total_questions']:
             return redirect(url_for('results'))
+
         return redirect(url_for('quiz'))
 
     return render_template(
@@ -177,24 +174,46 @@ def quiz():
         total_questions=session['total_questions']
     )
 
-
-
-
+# Results route
 @app.route('/results')
+@login_required
 def results():
-    # Get final results
     correct_count = session.get('correct_count', 0)
     total_questions = session.get('total_questions', 10)
-    
-    # Clear session data
+
+    new_score = Score(user_id=current_user.id, score=correct_count, total_questions=total_questions)
+    db.session.add(new_score)
+    db.session.commit()
+
     session.pop('quiz_questions', None)
     session.pop('current_question_index', None)
     session.pop('correct_count', None)
     session.pop('total_questions', None)
 
-    return render_template('results.html', 
-                           correct_count=correct_count, 
-                           total_questions=total_questions)
+    return render_template('results.html', correct_count=correct_count, total_questions=total_questions)
 
-if __name__ == "__main__":
+# Scores route
+@app.route('/scores')
+@login_required
+def scores():
+    user_scores = Score.query.filter_by(user_id=current_user.id).order_by(Score.date.desc()).all()
+    return render_template('scores.html', scores=user_scores)
+
+# Run the app
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # Ensures database and tables are created
+
+        # Add initial users
+        if not User.query.first():  # Only add users if the table is empty
+            initial_users = [
+                User(username='erten', password='lozinka'),
+                User(username='admin', password='adminpass'),
+                User(username='user1', password='userpass1'),
+                User(username='user2', password='userpass2')
+            ]
+            db.session.add_all(initial_users)
+            db.session.commit()
+            print("Initial users added to the database.")
+
     app.run(debug=True)
