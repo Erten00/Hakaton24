@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+import requests
 
 app = Flask(__name__)
 app.secret_key = "tajna_kljucccc"  # Neophodno za rad sesija
@@ -57,6 +58,49 @@ def logout():
 @login_required
 def protected():
     return f"Ovo je zaštićena stranica, {current_user.id}!"
+
+
+#RUTA ZA QUIZ
+
+@app.route('/quiz', methods=['GET', 'POST'])
+def quiz():
+    if request.method == 'POST':
+        # Handle submitted answers
+        selected_answer = request.form['answer']
+        correct_answer = request.form['correct_answer']
+        if selected_answer == correct_answer:
+            flash('Correct!')
+        else:
+            flash(f'Incorrect. The correct answer was: {correct_answer}')
+        return redirect(url_for('quiz'))
+
+    # Fetch a question from OpenTDB
+    response = requests.get('https://opentdb.com/api.php?amount=1&type=multiple')
+    
+    if response.status_code != 200:
+        flash('Failed to fetch quiz question. Please try again later.')
+        return redirect(url_for('home'))
+
+    data = response.json()
+
+    # Check if the expected key exists
+    if 'results' not in data or not data['results']:
+        flash('No quiz questions available. Please try again later.')
+        return redirect(url_for('home'))
+
+    question_data = data['results'][0]
+
+    question = question_data['question']
+    correct_answer = question_data['correct_answer']
+    incorrect_answers = question_data['incorrect_answers']
+
+    # Mix the correct answer with incorrect ones
+    options = incorrect_answers + [correct_answer]
+    import random
+    random.shuffle(options)
+
+    return render_template('quiz.html', question=question, options=options, correct_answer=correct_answer)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

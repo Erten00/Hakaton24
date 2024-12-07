@@ -1,0 +1,12 @@
+<form method="POST">
+    <p>{{ question }}</p>
+    {% for option in options %}
+        <label>
+            <input type="radio" name="answer" value="{{ option }}" required>
+            {{ option }}
+        </label><br>
+    {% endfor %}
+    <input type="hidden" name="correct_answer" value="{{ correct_answer }}">
+    <button type="submit">Submit</button>
+</form>
+<a href="/">Back to Home</a>
