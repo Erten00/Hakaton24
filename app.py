@@ -64,40 +64,55 @@ def home():
 # Registration route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    # Redirect to home page or quiz if the user is already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))  # or 'quiz' depending on your preference
+
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
+        # Check if username already exists
         if User.query.filter_by(username=username).first():
             flash('Username already exists!')
             return redirect(url_for('register'))
 
+        # Add new user to database
         new_user = User(username=username, password=hashed_password)
         db.session.add(new_user)
-        db.session.commit()
-
-        flash('Registration successful! Please log in.')
-        return redirect(url_for('login'))
+        try:
+            db.session.commit()
+            flash('Registration successful! Please log in.')
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error: {e}')
+            return redirect(url_for('register'))
 
     return render_template('register.html')
 
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # Redirect to home page or quiz if the user is already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))  # or 'quiz' depending on your preference
+
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         user = User.query.filter_by(username=username).first()
 
-        if user and password:
+        if user and check_password_hash(user.password, password):
             login_user(user)
             flash('Successfully logged in!')
-            return redirect(url_for('quiz'))
+            return redirect(url_for('quiz'))  # or 'home' based on your preference
         else:
             flash('Invalid username or password.')
 
     return render_template('login.html')
+
 
 # Logout route
 @app.route('/logout')
@@ -203,17 +218,5 @@ def scores():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Ensures database and tables are created
-
-        # Add initial users
-        if not User.query.first():  # Only add users if the table is empty
-            initial_users = [
-                User(username='erten', password=('lozinka')),
-                User(username='admin', password=('adminpass')),
-                User(username='user1', password=('userpass1')),
-                User(username='user2', password=('userpass2'))
-            ]
-            db.session.add_all(initial_users)
-            db.session.commit()
-            print("Initial users added to the database.")
 
     app.run(debug=True)
