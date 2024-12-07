@@ -7,17 +7,8 @@
 </head>
 <body>
     <h1>Welcome to the Quiz</h1>
-    <p>Select a category to begin:</p>
-    <form method="POST">
-        <select name="category" required>
-            <option value="" disabled selected>Choose a category</option>
-            {% for category in categories %}
-                <option value="{{ category.id }}">{{ category.name }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Start Quiz</button>
-    </form>
 
+    <h1><a href="{{url_for('dashboard')}}">Dashboard</a></h1>
     <h1><a href="{{url_for('login')}}">Login</a></h1>
     <h1><a href="{{url_for('register')}}">Registration</a></h1>
 
