@@ -1,24 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
     <title>Quiz</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/fontawesome.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/templatemo-grad-school.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/owl.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/lightbox.css') }}">
+
+    <style>
+        body {
+            background: url('{{ url_for(filename="choosing-bg.jpg") }}') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+        }
+
+        .quiz-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress {
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            background-color: #28a745;
+            transition: width 0.4s ease-in-out;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        .quiz-step {
+            display: none;
+        }
+
+        .quiz-step.active {
+            display: block;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Quiz</h1>
-    
-    <p>Question {{ current_question }} of {{ total_questions }}</p>
-    
-    <div>{{ question|safe }}</div>
-    
-    <form method="POST">
-        {% for option in options %}
-        <div>
-            <input type="radio" id="{{ option }}" name="answer" value="{{ option }}" required>
-            <label for="{{ option }}">{{ option|safe }}</label>
+    <div class="quiz-container">
+        <h2 class="text-center">Quiz Time!</h2>
+        <div class="progress mb-4">
+            <div class="progress-bar" id="progressBar" style="width: {{ (current_question / total_questions) * 100 }}%"></div>
         </div>
-        {% endfor %}
-        
-        <button type="submit">Submit Answer</button>
-    </form>
+
+        <form method="POST" action="{{ url_for('quiz') }}">
+            <div class="quiz-step active">
+                <p>{{ question }}</p>
+                {% for option in options %}
+                    <div>
+                        <input type="radio" id="answer_{{ loop.index }}" name="answer" value="{{ option }}">
+                        <label for="answer_{{ loop.index }}">{{ option }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Next</button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <p>Question {{ current_question }} of {{ total_questions }}</p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <script>
+        // You can add JS if needed for handling quiz progress, etc.
+    </script>
 </body>
+
 </html>
