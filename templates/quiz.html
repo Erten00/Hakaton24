@@ -39,7 +39,7 @@
         .progress-bar {
             width: 0;
             height: 100%;
-            background-color: #28a745;
+            background-color: #3093fd;
             transition: width 0.4s ease-in-out;
         }
 
@@ -60,7 +60,7 @@
         }
 
         .option.selected {
-            background: #28a745;
+            background: #1281f8;
         }
 
         footer {
@@ -70,6 +70,18 @@
 
         .question-container {
             text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
         }
     </style>
 </head>
@@ -95,20 +107,21 @@
                 </div>
             </div>
 
-            <footer>
+            <center>
+
                 <!-- Next button (conditional) -->
-                <button type="submit" class="btn btn-primary" 
+                <button type="submit" class="btn-primary" 
                         {% if current_question == total_questions %}
                         formaction="{{ url_for('results') }}" 
                         method="GET" 
                         {% endif %}>Next</button>
-            </footer>
         </form>
 
         <div class="text-center mt-4">
             <p>Question {{ current_question }} of {{ total_questions }}</p>
         </div>
     </div>
+            </center>
 
     <!-- JavaScript -->
     <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
