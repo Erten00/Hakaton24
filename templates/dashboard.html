@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Start & Leaderboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #212529;
+            color: #fff;
+        }
+
+        .form-container {
+            margin-top: 30px;
+        }
+
+        .table-container {
+            margin-top: 50px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="text-center mt-4">
+            <h1>Start Your Quiz</h1>
+            <p class="lead">Choose your category and difficulty, and see how you rank on the leaderboard!</p>
+        </div>
+
+        <!-- Form Section -->
+        <div class="row justify-content-center form-container">
+            <div class="col-md-6">
+                <form method="POST" action="{{ url_for('quiz') }}">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="9">General Knowledge</option>
+                            <option value="18">Science: Computers</option>
+                            <option value="23">History</option>
+                            <option value="21">Sports</option>
+                            <!-- Add more categories as needed -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="difficulty" class="form-label">Difficulty</label>
+                        <select class="form-select" id="difficulty" name="difficulty" required>
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Start Quiz</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div class="table-container">
+            <h2 class="text-center">Leaderboard</h2>
+            <table class="table table-dark table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Score</th>
+                        <th scope="col">Total Questions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rank, entry in enumerate(leaderboard, start=1) %}
+                    <tr>
+                        <th scope="row">{{ rank }}</th>
+                        <td>{{ entry.username }}</td>
+                        <td>{{ entry.score }}</td>
+                        <td>{{ entry.total_questions }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

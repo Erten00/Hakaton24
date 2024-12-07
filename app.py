@@ -219,6 +219,48 @@ def scores():
     user_scores = Score.query.filter_by(user_id=current_user.id).order_by(Score.date.desc()).all()
     return render_template('scores.html', scores=user_scores)
 
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def quiz_home():
+    # Categories and difficulties for the form
+    categories = [
+        {"id": 9, "name": "General Knowledge"},
+        {"id": 10, "name": "Entertainment: Books"},
+        {"id": 11, "name": "Entertainment: Film"},
+        {"id": 12, "name": "Entertainment: Music"},
+        {"id": 17, "name": "Science & Nature"},
+        {"id": 18, "name": "Science: Computers"},
+        {"id": 21, "name": "Sports"},
+        {"id": 23, "name": "History"},
+    ]
+    difficulties = ["easy", "medium", "hard"]
+
+    if request.method == 'POST':
+        # Get the selected category and difficulty from the form
+        selected_category = request.form.get('category')
+        selected_difficulty = request.form.get('difficulty')
+
+        # Save selections in session
+        if selected_category and selected_difficulty:
+            session['selected_category'] = selected_category
+            session['selected_difficulty'] = selected_difficulty
+            return redirect(url_for('quiz'))
+        else:
+            flash('Please select both a category and difficulty.')
+
+    # Leaderboard data
+    leaderboard = (
+        db.session.query(User.username, Score.score, Score.total_questions, Score.date)
+        .join(Score)
+        .order_by(Score.score.desc(), Score.date.asc())
+        .limit(10)
+        .all()
+    )
+
+    return render_template('dashboard.html', categories=categories, difficulties=difficulties, leaderboard=leaderboard)
+
+
 # Run the app
 if __name__ == '__main__':
     with app.app_context():
