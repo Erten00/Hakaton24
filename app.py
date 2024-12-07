@@ -60,6 +60,12 @@ def logout():
 def protected():
     return f"Ovo je zaštićena stranica, {current_user.id}!"
 
+
+@app.before_request
+def log_session_data():
+    print(f"Session data: {dict(session)}")
+
+
 # Ruta za Quiz
 @app.route('/quiz', methods=['GET', 'POST'])
 def quiz():
@@ -126,6 +132,7 @@ def quiz():
                            options=current_question['options'], 
                            current_question=session['current_question_index'] + 1,
                            total_questions=session['total_questions'])
+
 
 @app.route('/results')
 def results():
