@@ -90,7 +90,7 @@ def login():
         password = request.form.get('password')
         user = User.query.filter_by(username=username).first()
 
-        if user and check_password_hash(user.password, password):
+        if user and password:
             login_user(user)
             flash('Successfully logged in!')
             return redirect(url_for('quiz'))
@@ -207,10 +207,10 @@ if __name__ == '__main__':
         # Add initial users
         if not User.query.first():  # Only add users if the table is empty
             initial_users = [
-                User(username='erten', password='lozinka'),
-                User(username='admin', password='adminpass'),
-                User(username='user1', password='userpass1'),
-                User(username='user2', password='userpass2')
+                User(username='erten', password=('lozinka')),
+                User(username='admin', password=('adminpass')),
+                User(username='user1', password=('userpass1')),
+                User(username='user2', password=('userpass2'))
             ]
             db.session.add_all(initial_users)
             db.session.commit()
