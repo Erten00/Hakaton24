@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Početna</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Home</title>
 </head>
 <body>
-    {% if user.is_authenticated %}
-        <h1 color = "red">Zdravo, {{ user.id }}!</h1>
-        <a href="{{ url_for('logout') }}">Odjavi se</a>
-        <br>
-        <a href="{{ url_for('protected') }}">Zaštićena stranica</a>
-    {% else %}
-        <h1>Zdravo, posetioče!</h1>
-        <a href="{{ url_for('login') }}">Prijavi se</a>
-    {% endif %}
-
-    <h1><a href="{{ url_for('quiz') }}">QUIZ</a></h1>
+    <h1>Welcome to the Quiz</h1>
+    <p>Select a category to begin:</p>
+    <form method="POST">
+        <select name="category" required>
+            <option value="" disabled selected>Choose a category</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Start Quiz</button>
+    </form>
 </body>
 </html>
-.

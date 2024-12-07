@@ -28,9 +28,45 @@ def load_user(user_id):
     return None
 
 # Ruta za početnu stranicu
-@app.route("/")
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template("index.html", user=current_user)
+    categories = [
+        {"id": 9, "name": "General Knowledge"},
+        {"id": 10, "name": "Entertainment: Books"},
+        {"id": 11, "name": "Entertainment: Film"},
+        {"id": 12, "name": "Entertainment: Music"},
+        {"id": 13, "name": "Entertainment: Musicals & Theatres"},
+        {"id": 14, "name": "Entertainment: Television"},
+        {"id": 15, "name": "Entertainment: Video Games"},
+        {"id": 16, "name": "Entertainment: Board Games"},
+        {"id": 17, "name": "Science & Nature"},
+        {"id": 18, "name": "Science: Computers"},
+        {"id": 19, "name": "Science: Mathematics"},
+        {"id": 20, "name": "Mythology"},
+        {"id": 21, "name": "Sports"},
+        {"id": 22, "name": "Geography"},
+        {"id": 23, "name": "History"},
+        {"id": 24, "name": "Politics"},
+        {"id": 25, "name": "Art"},
+        {"id": 26, "name": "Celebrities"},
+        {"id": 27, "name": "Animals"},
+        {"id": 28, "name": "Vehicles"},
+        {"id": 29, "name": "Entertainment: Comics"},
+        {"id": 30, "name": "Science: Gadgets"},
+        {"id": 31, "name": "Entertainment: Japanese Anime & Manga"},
+        {"id": 32, "name": "Entertainment: Cartoon & Animations"}
+    ]
+
+    if request.method == 'POST':
+        selected_category = request.form.get('category')
+        if selected_category:
+            session['selected_category'] = selected_category
+            return redirect(url_for('quiz'))
+        else:
+            flash('Please select a category before proceeding.')
+
+    return render_template('index.html', categories=categories)
+
 
 # Ruta za login
 @app.route("/login", methods=["GET", "POST"])
@@ -69,7 +105,6 @@ def log_session_data():
 
 @app.route('/quiz', methods=['GET', 'POST'])
 def quiz():
-    # Ensure a valid session token exists
     if 'api_token' not in session:
         token_response = requests.get('https://opentdb.com/api_token.php?command=request')
         if token_response.status_code == 200:
@@ -78,17 +113,16 @@ def quiz():
             flash('Failed to initialize quiz session. Try again later.')
             return redirect(url_for('home'))
 
-    # Initialize quiz questions if not already present
     if 'quiz_questions' not in session or not session.get('quiz_questions'):
         token = session['api_token']
-        quiz_response = requests.get(f'https://opentdb.com/api.php?amount=10&type=multiple&token={token}')
+        category = session.get('selected_category', 9)  # Default to General Knowledge
+        quiz_response = requests.get(f'https://opentdb.com/api.php?amount=10&category={category}&type=multiple&token={token}')
         if quiz_response.status_code != 200 or not quiz_response.json().get('results'):
             flash('Failed to fetch quiz questions. Please try again later.')
             return redirect(url_for('home'))
 
         quiz_data = quiz_response.json()
 
-        # Handle token exhaustion (response_code == 4)
         if quiz_data.get('response_code') == 4:
             reset_response = requests.get(f'https://opentdb.com/api_token.php?command=reset&token={token}')
             if reset_response.status_code == 200:
@@ -98,7 +132,6 @@ def quiz():
                 flash('Failed to reset quiz session. Try again later.')
                 return redirect(url_for('home'))
 
-        # Prepare questions
         session['quiz_questions'] = []
         for question in quiz_data['results']:
             options = question['incorrect_answers'] + [question['correct_answer']]
@@ -114,7 +147,6 @@ def quiz():
         session['total_questions'] = len(session['quiz_questions'])
         session.permanent = True
 
-    # Retrieve current question
     current_index = session.get('current_question_index', 0)
     if current_index >= session['total_questions']:
         return redirect(url_for('results'))
@@ -122,26 +154,21 @@ def quiz():
     current_question = session['quiz_questions'][current_index]
 
     if request.method == 'POST':
-        # Validate submitted answer
         selected_answer = request.form.get('answer')
         if not selected_answer:
             flash('Please select an answer before submitting.')
             return redirect(url_for('quiz'))
 
-        # Check if the answer is correct
         if selected_answer == current_question['correct_answer']:
             session['correct_count'] += 1
 
-        # Move to next question
         session['current_question_index'] += 1
         session.modified = True
 
-        # Redirect to results if quiz is completed
         if session['current_question_index'] >= session['total_questions']:
             return redirect(url_for('results'))
         return redirect(url_for('quiz'))
 
-    # Render quiz template
     return render_template(
         'quiz.html',
         question=current_question['question'],
@@ -149,6 +176,7 @@ def quiz():
         current_question=current_index + 1,
         total_questions=session['total_questions']
     )
+
 
 
 
