@@ -89,7 +89,7 @@ def register():
         except Exception as e:
             db.session.rollback()
             flash(f'Error: {e}')
-            return redirect(url_for('register'))
+            return redirect(url_for('dashboard'))
 
     return render_template('register.html')
 
@@ -108,7 +108,7 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             flash('Successfully logged in!')
-            return redirect(url_for('quiz'))  # or 'home' based on your preference
+            return redirect(url_for('dashboard'))  # or 'home' based on your preference
         else:
             flash('Invalid username or password.')
 
