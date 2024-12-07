@@ -99,7 +99,7 @@
                 <!-- Next button (conditional) -->
                 <button type="submit" class="btn btn-primary" 
                         {% if current_question == total_questions %}
-                        formaction="{{ url_for('results') }}" 
+                        formaction="{{ url_for('dashboard') }}" 
                         method="GET" 
                         {% endif %}>Next</button>
             </footer>
