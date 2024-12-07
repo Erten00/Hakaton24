@@ -54,12 +54,6 @@ def logout():
     flash("Uspešno ste odjavljeni!")
     return redirect(url_for("home"))
 
-# Ruta za zaštićenu stranicu
-@app.route("/protected")
-@login_required
-def protected():
-    return f"Ovo je zaštićena stranica, {current_user.id}!"
-
 # Ruta za Quiz
 @app.route('/quiz', methods=['GET', 'POST'])
 def quiz():

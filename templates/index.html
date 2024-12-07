@@ -8,7 +8,6 @@
         <h1 color = "red">Zdravo, {{ user.id }}!</h1>
         <a href="{{ url_for('logout') }}">Odjavi se</a>
         <br>
-        <a href="{{ url_for('protected') }}">Zaštićena stranica</a>
     {% else %}
         <h1>Zdravo, posetioče!</h1>
         <a href="{{ url_for('login') }}">Prijavi se</a>
