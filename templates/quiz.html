@@ -12,15 +12,9 @@
     <!-- Bootstrap core CSS -->
     <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/fontawesome.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/templatemo-grad-school.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/owl.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/lightbox.css') }}">
-
     <style>
         body {
-            background: url('{{ url_for(filename="choosing-bg.jpg") }}') no-repeat center center fixed;
+            background: url("{{ url_for('static', filename='img/bg.jpg') }}") no-repeat center center fixed;
             background-size: cover;
             font-family: 'Montserrat', sans-serif;
             color: #fff;
@@ -53,12 +47,29 @@
             margin-top: 10px;
         }
 
-        .quiz-step {
-            display: none;
+        .option {
+            padding: 10px;
+            margin: 5px 0;
+            background: #333;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        .quiz-step.active {
-            display: block;
+        .option:hover {
+            background: #444;
+        }
+
+        .option.selected {
+            background: #28a745;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .question-container {
+            text-align: center;
         }
     </style>
 </head>
@@ -71,19 +82,27 @@
         </div>
 
         <form method="POST" action="{{ url_for('quiz') }}">
-            <div class="quiz-step active">
-                <p>{{ question }}</p>
-                {% for option in options %}
-                    <div>
-                        <input type="radio" id="answer_{{ loop.index }}" name="answer" value="{{ option }}">
-                        <label for="answer_{{ loop.index }}">{{ option }}</label>
-                    </div>
-                {% endfor %}
+            <div class="question-container">
+                <h3>{{ question }}</h3>
+
+                <div class="option-container">
+                    {% for option in options %}
+                        <div class="option" id="option_{{ loop.index }}" onclick="selectOption({{ loop.index }})">
+                            {{ option }}
+                            <input type="radio" name="answer" value="{{ option }}" style="display:none" id="radio_{{ loop.index }}">
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">Next</button>
-            </div>
+            <footer>
+                <!-- Next button (conditional) -->
+                <button type="submit" class="btn btn-primary" 
+                        {% if current_question == total_questions %}
+                        formaction="{{ url_for('results') }}" 
+                        method="GET" 
+                        {% endif %}>Next</button>
+            </footer>
         </form>
 
         <div class="text-center mt-4">
@@ -96,7 +115,26 @@
     <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     <script>
-        // You can add JS if needed for handling quiz progress, etc.
+        var selectedOption = null;
+
+        function selectOption(index) {
+            if (selectedOption !== null) {
+                document.getElementById("option_" + selectedOption).classList.remove("selected");
+                document.getElementById("radio_" + selectedOption).checked = false;
+            }
+
+            selectedOption = index;
+            document.getElementById("option_" + index).classList.add("selected");
+            document.getElementById("radio_" + index).checked = true;
+        }
+
+        // Update progress bar dynamically
+        function updateProgressBar() {
+            var progress = (({{ current_question }} / {{ total_questions }}) * 100) -10;
+            document.getElementById("progressBar").style.width = progress + "%";
+        }
+
+        updateProgressBar();
     </script>
 </body>
 
