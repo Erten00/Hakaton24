@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Results</title>
+</head>
+<body>
+    <h1>Quiz Results</h1>
+    
+    <p>You answered {{ correct_count }} out of {{ total_questions }} questions correctly!</p>
+    
+    <p>Score: {{ ((correct_count / total_questions) * 100)|round(2) }}%</p>
+    
+    <a href="{{ url_for('quiz') }}">Try Again</a>
+    <a href="{{ url_for('home') }}">Back to Home</a>
+</body>
+</html>

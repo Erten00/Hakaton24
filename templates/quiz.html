@@ -1,12 +1,24 @@
-<form method="POST">
-    <p>{{ question }}</p>
-    {% for option in options %}
-        <label>
-            <input type="radio" name="answer" value="{{ option }}" required>
-            {{ option }}
-        </label><br>
-    {% endfor %}
-    <input type="hidden" name="correct_answer" value="{{ correct_answer }}">
-    <button type="submit">Submit</button>
-</form>
-<a href="/">Back to Home</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+</head>
+<body>
+    <h1>Quiz</h1>
+    
+    <p>Question {{ current_question }} of {{ total_questions }}</p>
+    
+    <div>{{ question|safe }}</div>
+    
+    <form method="POST">
+        {% for option in options %}
+        <div>
+            <input type="radio" id="{{ option }}" name="answer" value="{{ option }}" required>
+            <label for="{{ option }}">{{ option|safe }}</label>
+        </div>
+        {% endfor %}
+        
+        <button type="submit">Submit Answer</button>
+    </form>
+</body>
+</html>

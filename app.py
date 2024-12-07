@@ -1,6 +1,7 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
+from flask import Flask, render_template, redirect, url_for, request, flash, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import requests
+import random
 
 app = Flask(__name__)
 app.secret_key = "tajna_kljucccc"  # Neophodno za rad sesija
@@ -59,48 +60,88 @@ def logout():
 def protected():
     return f"Ovo je zaštićena stranica, {current_user.id}!"
 
-
-#RUTA ZA QUIZ
-
+# Ruta za Quiz
 @app.route('/quiz', methods=['GET', 'POST'])
 def quiz():
+    # Inicijalizacija ili resetovanje sesije za novi kviz
+    if 'quiz_questions' not in session or request.method == 'GET':
+        # Fetch 10 questions at the start of the quiz
+        response = requests.get('https://opentdb.com/api.php?amount=10&type=multiple')
+        if response.status_code != 200:
+            flash('Failed to fetch quiz questions. Please try again later.')
+            return redirect(url_for('home'))
+
+        data = response.json()
+        if 'results' not in data or not data['results']:
+            flash('No quiz questions available. Please try again later.')
+            return redirect(url_for('home'))
+
+        # Prepare the quiz questions
+        quiz_questions = []
+        for question_data in data['results']:
+            # Mix the correct answer with incorrect ones
+            options = question_data['incorrect_answers'] + [question_data['correct_answer']]
+            random.shuffle(options)
+            
+            quiz_questions.append({
+                'question': question_data['question'],
+                'options': options,
+                'correct_answer': question_data['correct_answer']
+            })
+
+        # Store quiz questions in session
+        session['quiz_questions'] = quiz_questions
+        session['current_question_index'] = 0
+        session['correct_count'] = 0
+        session['total_questions'] = 10
+
+    # If quiz is completed, redirect to results
+    if session['current_question_index'] >= session['total_questions']:
+        return redirect(url_for('results'))
+
+    # Get current question
+    current_question = session['quiz_questions'][session['current_question_index']]
+
+    # Handle answer submission
     if request.method == 'POST':
-        # Handle submitted answers
-        selected_answer = request.form['answer']
-        correct_answer = request.form['correct_answer']
-        if selected_answer == correct_answer:
-            flash('Correct!')
-        else:
-            flash(f'Incorrect. The correct answer was: {correct_answer}')
+        selected_answer = request.form.get('answer')
+        
+        # Check if answer is correct
+        if selected_answer == current_question['correct_answer']:
+            session['correct_count'] += 1
+
+        # Move to next question
+        session['current_question_index'] += 1
+        session.modified = True
+
+        # Redirect to next question or results
+        if session['current_question_index'] >= session['total_questions']:
+            return redirect(url_for('results'))
+        
         return redirect(url_for('quiz'))
 
-    # Fetch a question from OpenTDB
-    response = requests.get('https://opentdb.com/api.php?amount=1&type=multiple')
+    # Render current question
+    return render_template('quiz.html', 
+                           question=current_question['question'], 
+                           options=current_question['options'], 
+                           current_question=session['current_question_index'] + 1,
+                           total_questions=session['total_questions'])
+
+@app.route('/results')
+def results():
+    # Get final results
+    correct_count = session.get('correct_count', 0)
+    total_questions = session.get('total_questions', 10)
     
-    if response.status_code != 200:
-        flash('Failed to fetch quiz question. Please try again later.')
-        return redirect(url_for('home'))
+    # Clear session data
+    session.pop('quiz_questions', None)
+    session.pop('current_question_index', None)
+    session.pop('correct_count', None)
+    session.pop('total_questions', None)
 
-    data = response.json()
-
-    # Check if the expected key exists
-    if 'results' not in data or not data['results']:
-        flash('No quiz questions available. Please try again later.')
-        return redirect(url_for('home'))
-
-    question_data = data['results'][0]
-
-    question = question_data['question']
-    correct_answer = question_data['correct_answer']
-    incorrect_answers = question_data['incorrect_answers']
-
-    # Mix the correct answer with incorrect ones
-    options = incorrect_answers + [correct_answer]
-    import random
-    random.shuffle(options)
-
-    return render_template('quiz.html', question=question, options=options, correct_answer=correct_answer)
-
+    return render_template('results.html', 
+                           correct_count=correct_count, 
+                           total_questions=total_questions)
 
 if __name__ == "__main__":
     app.run(debug=True)
