@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
+import html
 import random
 
 app = Flask(__name__)
@@ -163,6 +164,8 @@ def quiz():
         return redirect(url_for('results'))
 
     current_question = session['quiz_questions'][current_index]
+    decoded_question = html.unescape(current_question['question'])  # Decoding HTML entities
+
 
     if request.method == 'POST':
         selected_answer = request.form.get('answer')
@@ -183,14 +186,14 @@ def quiz():
 
     return render_template(
         'quiz.html',
-        question=current_question['question'],
+        question=decoded_question,
         options=current_question['options'],
         current_question=current_index + 1,
         total_questions=session['total_questions']
     )
 
 # Results route
-@app.route('/results')
+@app.route('/results', methods=['GET', 'POST'])
 @login_required
 def results():
     correct_count = session.get('correct_count', 0)
@@ -206,6 +209,8 @@ def results():
     session.pop('total_questions', None)
 
     return render_template('results.html', correct_count=correct_count, total_questions=total_questions)
+
+
 
 # Scores route
 @app.route('/scores')
