@@ -27,12 +27,12 @@
         </div>
   
         <div class="form__field">
-          <input type="submit" value="Sign In">
+          <input type="submit" a href="{{ url_for('login') }}" value="Sign In">
         </div>
   
       </form>
   
-      <p class="text--center">Not a member? <a href="{{ url_for('login') }}">Sign up now</a> <svg class="icon">
+      <p class="text--center">Make an account? <a href="{{ url_for('login') }}">Sign up now</a> <svg class="icon">
           <use xlink:href="#icon-arrow-right"></use>
         </svg></p>
   
