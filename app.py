@@ -258,7 +258,7 @@ def quiz_home():
         .all()
     )
 
-    return render_template('dashboard.html', categories=categories, difficulties=difficulties, leaderboard=leaderboard)
+    return render_template('dashboard.html', categories=categories, difficulties=difficulties, leaderboard=leaderboard, enumerate=enumerate)
 
 
 # Run the app
