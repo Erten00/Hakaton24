@@ -226,14 +226,17 @@ def dashboard():
     correct_count = session.pop('correct_count', None)  # Remove from session after use
     total_questions = session.pop('total_questions', None)  # Remove from session after use
 
-    # If quiz results exist, flash a message to display on the dashboard
+    latest_user_score_id = None  # Track the latest user's score ID
+
     if correct_count is not None and total_questions is not None:
         flash(f'Congratulations! You just finished your quiz. Score: {correct_count} / {total_questions}', 'success')
 
-        # Save score in the database
+        # Save the latest score in the database
         new_score = Score(user_id=current_user.id, score=correct_count, total_questions=total_questions)
         db.session.add(new_score)
         db.session.commit()
+
+        latest_user_score_id = new_score.id  # Store the ID of the newly created score
 
     # Clear remaining quiz-related session data
     session.pop('quiz_questions', None)
@@ -263,10 +266,10 @@ def dashboard():
         else:
             flash('Please select both a category and difficulty.', 'error')
 
-    # Leaderboard data
+    # Get leaderboard (Top 10 scores)
     leaderboard = (
-        db.session.query(User.username, Score.score, Score.total_questions, Score.date)
-        .join(Score)
+        db.session.query(Score.id, User.username, Score.score, Score.total_questions, Score.date)
+        .join(User, User.id == Score.user_id)
         .order_by(Score.score.desc(), Score.date.asc())
         .limit(10)
         .all()
@@ -277,6 +280,7 @@ def dashboard():
         categories=categories, 
         difficulties=difficulties, 
         leaderboard=leaderboard, 
+        latest_user_score_id=latest_user_score_id,  # Send the latest score ID to highlight it in the template
         enumerate=enumerate
     )
 
