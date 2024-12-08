@@ -108,7 +108,7 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             flash('Successfully logged in!')
-            return redirect(url_for('dashboard'))  # or 'home' based on your preference
+            return redirect(url_for('start'))  # or 'home' based on your preference
         else:
             flash('Invalid username or password.')
 
@@ -259,6 +259,12 @@ def dashboard():
     )
 
     return render_template('dashboard.html', categories=categories, difficulties=difficulties, leaderboard=leaderboard, enumerate=enumerate)
+
+# Start route
+@app.route('/start')
+@login_required
+def start():
+    return render_template('start.html')  # This will render the start page.
 
 
 # Run the app
