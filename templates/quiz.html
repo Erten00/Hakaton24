@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900"
+        rel="stylesheet">
     <link rel="icon" href="/static/images/owl logo.png" type="image/x-icon">
     <title>Quiz</title>
 
@@ -75,7 +76,8 @@
     <div class="quiz-container">
         <h2 class="text-center">Quiz Time!</h2>
         <div class="progress mb-4">
-            <div class="progress-bar" id="progressBar" style="width: {{ (current_question / total_questions) * 100  - 10}}%"></div>
+            <div class="progress-bar" id="progressBar"
+                style="width: {{ (current_question / total_questions) * 100  - 10}}%"></div>
         </div>
 
         <form method="POST" action="{{ url_for('quiz') }}">
@@ -84,10 +86,11 @@
 
                 <div class="option-container">
                     {% for option in options %}
-                        <div class="option" id="option_{{ loop.index }}" onclick="selectOption({{ loop.index }})">
-                            {{ option }}
-                            <input type="radio" name="answer" value="{{ option }}" style="display:none" id="radio_{{ loop.index }}">
-                        </div>
+                    <div class="option" id="option_{{ loop.index }}" onclick="selectOption({{ loop.index }})">
+                        {{ option }}
+                        <input type="radio" name="answer" value="{{ option }}" style="display:none"
+                            id="radio_{{ loop.index }}">
+                    </div>
                     {% endfor %}
                 </div>
             </div>
@@ -96,9 +99,9 @@
 
                 <button type="submit" class="btn btn-light">
                     {% if current_question == total_questions %}
-                        Finish
+                    Finish
                     {% else %}
-                        Next
+                    Next
                     {% endif %}
                 </button>
         </form>
@@ -107,7 +110,7 @@
             <p>Question {{ current_question }} of {{ total_questions }}</p>
         </div>
     </div>
-            </center>
+    </center>
 
     <!-- JavaScript -->
     <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
@@ -128,14 +131,87 @@
         }
 
         function updateProgressBar(currentQuestion, totalQuestions) {
-        var progress = ((currentQuestion / totalQuestions) * 100) - 10;
-        if (progress > 100) {
-            progress = 100; // Ensure the progress doesn't exceed 100%
-        }
-        document.getElementById("progressBar").style.width = progress + "%";
+            var progress = ((currentQuestion / totalQuestions) * 100) - 10;
+            if (progress > 100) {
+                progress = 100; // Ensure the progress doesn't exceed 100%
+            }
+            document.getElementById("progressBar").style.width = progress + "%";
         }
 
         updateProgressBar();
+    </script>
+
+    <!-- Add these scripts just before the closing </body> tag in your quiz.html -->
+    <script>
+        // Anti-Cheat Mechanism
+        (function () {
+            let quizStartTime = Date.now();
+            let warningCount = 0;
+            const MAX_WARNINGS = 3;
+
+            // Function to handle visibility changes
+            function handleVisibilityChange() {
+                if (document.hidden) {
+                    warningCount++;
+
+                    // Show warning modal
+                    const warningModal = document.createElement('div');
+                    warningModal.innerHTML = `
+                        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px;">
+                            <div>
+                                <h2>Warning!</h2>
+                                <p>Switching tabs or windows is not allowed during the quiz.</p>
+                                <p>Warning ${warningCount} of ${MAX_WARNINGS}</p>
+                                <p>Continuing to switch tabs may result in quiz termination.</p>
+                                <button onclick="this.closest('div').remove();" class="btn btn-danger">Continue Quiz</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(warningModal);
+
+                    // If user exceeds max warnings, submit the form to end the quiz
+                    if (warningCount >= MAX_WARNINGS) {
+                        alert('Too many tab/window switches. Your quiz will now end.');
+                        document.querySelector('form').action = "{{ url_for('results') }}";
+                        document.querySelector('form').submit();
+                    }
+                }
+            }
+
+            // Track if user switches tabs/windows
+            document.addEventListener("visibilitychange", handleVisibilityChange);
+
+            // Prevent right-click context menu
+            document.addEventListener('contextmenu', function (e) {
+                e.preventDefault();
+                alert('Right-click is disabled during the quiz.');
+            });
+
+            // Prevent copy-paste
+            document.addEventListener('copy', function (e) {
+                e.preventDefault();
+                alert('Copy-paste is not allowed during the quiz.');
+            });
+
+            // Detect if user tries to leave the page
+            window.addEventListener('beforeunload', function (e) {
+                const timeSpent = (Date.now() - quizStartTime) / 1000; // seconds
+
+                // If quiz has been ongoing for more than 10 seconds, show warning
+                if (timeSpent > 10) {
+                    e.preventDefault(); // Cancel the event
+                    e.returnValue = ''; // Display a default message in some browsers
+                }
+            });
+        })();
+
+        // Extend existing selectOption function to work with anti-cheat
+        function extendedSelectOption(index) {
+            selectOption(index);
+
+            // Optional: Add additional tracking or logging if needed
+            console.log(`Option ${index} selected`);
+        }
     </script>
 </body>
 

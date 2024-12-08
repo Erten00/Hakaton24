@@ -47,19 +47,27 @@
             <div class="logo" style="width: 33vw;">
                 <a href="{{url_for('start')}}"><img src="/static/images/owl logo.png" alt="" style="width: 60px;"></a>
             </div>
-          <h1 style="width: 33vw; font-style: normal; color: #f5a425;font-style: italic; font-size: 46px; font-weight: 800;font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;display: flex;align-items: center;justify-content: center;">The Owls</h1>
-          <div style="display: flex;width: 33vw;flex-direction: row;justify-content: end;align-items: end;">
-            <div style="border: #f5a425 solid 2px;display: flex;flex-direction: row;justify-content: center;align-items: center;height: 45px;width: 150px;margin-right: 40px;border-radius: 2px;">
-                <div style="width: 50%;height: 100%;display: flex;justify-content: center;align-items: center;">
-                    <p style="font-style: italic; color: #f5a425;margin-top: 13px;font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">{{ current_user.username }}</p>
-                </div>
-                <div style="width: 50%;background-color: #f5a425;height: 100%;display: flex;justify-content: center;align-items: center;">
-                    <a href="{{url_for('logout')}}" style="font-style: italic; color: white;font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">Log Out</a>
+            <h1
+                style="width: 33vw; font-style: normal; color: #f5a425;font-style: italic; font-size: 46px; font-weight: 800;font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;display: flex;align-items: center;justify-content: center;">
+                The Owls</h1>
+            <div style="display: flex;width: 33vw;flex-direction: row;justify-content: end;align-items: end;">
+                <div
+                    style="border: #f5a425 solid 2px;display: flex;flex-direction: row;justify-content: center;align-items: center;height: 45px;width: 250px;margin-right: 40px;border-radius: 2px;">
+                    <div style="width: 50%;height: 100%;display: flex;justify-content: center;align-items: center;">
+                        <p
+                            style="font-style: italic; color: #f5a425;margin-top: 13px;font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">
+                            {{ current_user.username }}</p>
+                    </div>
+                    <div
+                        style="width: 50%;background-color: #f5a425;height: 100%;display: flex;justify-content: center;align-items: center;">
+                        <a href="{{url_for('logout')}}"
+                            style="font-style: italic; color: white;font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">Log
+                            Out</a>
+                    </div>
                 </div>
             </div>
-          </div>
         </div>
-      </header>
+    </header>
     <div class="container" style="margin-top: 100px;">
         <!-- Header -->
         <div class="text-center mt-4">
@@ -76,14 +84,29 @@
                         <select class="form-select" id="category" name="category" required>
                             <option value="9">General Knowledge</option>
                             <option value="10">Entertainment: Books</option>
+                            <option value="11">Entertainment: Film</option>
                             <option value="12">Entertainment: Music</option>
-                            <option value="17">Science & Nature</option>
+                            <option value="13">Entertainment: Musicals &amp; Theatres</option>
+                            <option value="14">Entertainment: Television</option>
+                            <option value="15">Entertainment: Video Games</option>
+                            <option value="16">Entertainment: Board Games</option>
+                            <option value="17">Science &amp; Nature</option>
                             <option value="18">Science: Computers</option>
                             <option value="19">Science: Mathematics</option>
+                            <option value="20">Mythology</option>
                             <option value="21">Sports</option>
                             <option value="22">Geography</option>
                             <option value="23">History</option>
+                            <option value="24">Politics</option>
                             <option value="25">Art</option>
+                            <option value="26">Celebrities</option>
+                            <option value="27">Animals</option>
+                            <option value="28">Vehicles</option>
+                            <option value="29">Entertainment: Comics</option>
+                            <option value="30">Science: Gadgets</option>
+                            <option value="31">Entertainment: Japanese Anime &amp; Manga</option>
+                            <option value="32">Entertainment: Cartoon &amp; Animations</option>
+
                         </select>
                     </div>
                     <div class="mb-3">
