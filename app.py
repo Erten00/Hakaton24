@@ -271,7 +271,7 @@ def dashboard():
         db.session.query(Score.id, User.username, Score.score, Score.total_questions, Score.date)
         .join(User, User.id == Score.user_id)
         .order_by(Score.score.desc(), Score.date.asc())
-        .limit(10)
+        .limit(100)
         .all()
     )
 
@@ -283,6 +283,7 @@ def dashboard():
         latest_user_score_id=latest_user_score_id,  # Send the latest score ID to highlight it in the template
         enumerate=enumerate
     )
+
 
 
 
