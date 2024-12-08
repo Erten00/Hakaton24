@@ -222,6 +222,19 @@ def scores():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
+
+    correct_count = session.get('correct_count', 0)
+    total_questions = session.get('total_questions', 10)
+
+    new_score = Score(user_id=current_user.id, score=correct_count, total_questions=total_questions)
+    db.session.add(new_score)
+    db.session.commit()
+
+    session.pop('quiz_questions', None)
+    session.pop('current_question_index', None)
+    session.pop('correct_count', None)
+    session.pop('total_questions', None)
+
     # Categories and difficulties for the form
     categories = [
         {"id": 9, "name": "General Knowledge"},
