@@ -123,7 +123,6 @@ def logout():
     flash('Successfully logged out!')
     return redirect(url_for('home'))
 
-# Quiz route
 @app.route('/quiz', methods=['GET', 'POST'])
 @login_required
 def quiz():
@@ -161,7 +160,7 @@ def quiz():
 
     current_index = session.get('current_question_index', 0)
     if current_index >= session['total_questions']:
-        return redirect(url_for('results'))
+        return redirect(url_for('dashboard'))
 
     current_question = session['quiz_questions'][current_index]
     decoded_question = html.unescape(current_question['question'])  # Decoding HTML entities
@@ -180,7 +179,7 @@ def quiz():
         session.modified = True
 
         if session['current_question_index'] >= session['total_questions']:
-            return redirect(url_for('results'))
+            return redirect(url_for('dashboard'))
 
         return redirect(url_for('quiz'))
 

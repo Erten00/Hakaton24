@@ -29,7 +29,7 @@
   <header class="main-header clearfix" role="header" style="display: flex;flex-direction: row;">
     <div class="Name" style="width: 100%;display: flex;align-items: center;">
         <div class="logo" style="width: 33vw;">
-            <a href="#"><img src="/static/images/owl logo.png" alt="" style="width: 60px;"></a>
+            <a href="{{url_for('start')}}"><img src="/static/images/owl logo.png" alt="" style="width: 60px;"></a>
           </div>
       <h1 style="width: 33vw; font-style: normal; color: #f5a425;font-style: italic; font-size: 46px; font-weight: 800;font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;display: flex;align-items: center;justify-content: center;">The Owls</h1>
       <div style="display: flex;width: 33vw;flex-direction: row;justify-content: end;align-items: end;">
@@ -72,46 +72,18 @@
           </div>
         </div>
         <div class="col-md-12">
-          <div id='tabs'>
+          <div id="tabs">
             <ul>
-              <li><a href='#tabs-1'>Erten Preljevic</a></li>
-              <li><a href='#tabs-2'>Ermin Muslic</a></li>
-              <li><a href='#tabs-3'>Denis Dolovac</a></li>
+              <li><a href="#tabs-1">Ermin Muslic</a></li>
+              <li><a href="#tabs-2">Erten Preljevic</a></li>
+              <li><a href="#tabs-3">Denis Dolovac</a></li>
             </ul>
-            <section class='tabs-content'>
-              <article id='tabs-1'>
-                <div class="row">
-                  <div class="col-md-6">
-                    <img src="/static/images/choose-us-image-01.png" alt="">
-                  </div>
-                  <div class="col-md-6">
-                    <h4>Erten Preljevic</h4>
-                    <p>Grad School is free educational HTML template with Bootstrap 4.5.2 CSS layout. Feel free to use it for educational or commercial purposes. You may want to make <a href="https://paypal.me/templatemo" target="_parent" rel="sponsored">a little donation</a> to TemplateMo. Please tell your friends about us. Thank you.</p>
-                  </div>
-                </div>
+            <section class="tabs-content">
+              <article id="tabs-1">
               </article>
-              <article id='tabs-2'>
-                <div class="row">
-                  <div class="col-md-6">
-                    <img src="/static/images/choose-us-image-02.png" alt="">
-                  </div>
-                  <div class="col-md-6">
-                    <h4>Ermin Muslic</h4>
-                    <p>You can modify this HTML layout by editing contents and adding more pages as you needed. Since this template has options to add dropdown menus, you can put many HTML pages.</p> 
-                    <p>Suspendisse tincidunt, magna ut finibus rutrum, libero dolor euismod odio, nec interdum quam felis non ante.</p>
-                  </div>
-                </div>
+              <article id="tabs-2">
               </article>
-              <article id='tabs-3'>
-                <div class="row">
-                  <div class="col-md-6">
-                    <img src="/static/images/choose-us-image-03.png" alt="">
-                  </div>
-                  <div class="col-md-6">
-                    <h4>Denis Dolovac</h4>
-                    <p>You are NOT allowed to redistribute this template ZIP file on any template collection website. However, you can use this template to convert into a specific theme for any kind of CMS platform such as WordPress. For more information, you shall <a rel="nofollow" href="https://templatemo.com/contact" target="_parent">contact TemplateMo</a> now.</p>
-                  </div>
-                </div>
+              <article id="tabs-3">
               </article>
             </section>
           </div>
@@ -119,6 +91,7 @@
       </div>
     </div>
   </section>
+
 
   
   <section class="section courses" data-section="section4">
@@ -135,9 +108,6 @@
             <div class="down-content">
               <h4>General Knowlege</h4>
               <p>Broadens understanding across various topics, including culture, current events, and practical life skills.</p>  
-              <div class="text-button-pay">
-                <a href="#">Pay <i class="fa fa-angle-double-right"></i></a>
-              </div>
             </div>
           </div>
           <div class="item">
@@ -145,9 +115,6 @@
             <div class="down-content">
               <h4>Mathematics</h4>
               <p>Enhances logical reasoning and quantitative skills through the study of numbers, shapes, and patterns.</p>
-              <div class="text-button-free">
-                <a href="#">Free <i class="fa fa-angle-double-right"></i></a>
-              </div>
             </div>
           </div>
           <div class="item">
@@ -155,9 +122,6 @@
             <div class="down-content">
               <h4>Science</h4>
               <p>Explores the natural world through observation, experimentation, and analysis through tests.</p>
-              <div class="text-button-pay">
-                <a href="#">Pay <i class="fa fa-angle-double-right"></i></a>
-              </div>
             </div>
           </div>
           <div class="item">
@@ -165,9 +129,6 @@
             <div class="down-content">
               <h4>Books</h4>
               <p>Expand knowledge, imagination, and empathy by exploring diverse stories, ideas, and perspectives.</p>
-              <div class="text-button-free">
-                <a href="#">Free <i class="fa fa-angle-double-right"></i></a>
-              </div>
             </div>
           </div>
           <div class="item">
@@ -175,9 +136,6 @@
             <div class="down-content">
               <h4>Computer Science</h4>
               <p>Teaches problem-solving using programming, algorithms, and systems, shaping innovation in technology.</p>
-              <div class="text-button-pay">
-                <a href="#">Pay <i class="fa fa-angle-double-right"></i></a>
-              </div>
             </div>
           </div>
           <div class="item">
@@ -185,9 +143,6 @@
             <div class="down-content">
               <h4>Art</h4>
               <p>Encourages creativity and self-expression through visual, performing, and applied artistic mediums.</p>
-              <div class="text-button-free">
-                <a href="#">Free <i class="fa fa-angle-double-right"></i></a>
-              </div>
             </div>
           </div>
           <div class="item">
@@ -195,9 +150,6 @@
             <div class="down-content">
               <h4>Sports</h4>
               <p>Promotes physical health, teamwork, and discipline through structured physical activities and games.</p>
-              <div class="text-button-free">
-                <a href="#">Free <i class="fa fa-angle-double-right"></i></a>
-              </div>
             </div>
           </div>
           <div class="item">
@@ -205,9 +157,6 @@
             <div class="down-content">
               <h4>Geography</h4>
               <p>Examines Earth's landscapes, environments, and human interactions with nature and resources.</p>
-              <div class="text-button-pay">
-                <a href="#">Pay <i class="fa fa-angle-double-right"></i></a>
-              </div>
             </div>
           </div>
           <div class="item">
@@ -215,9 +164,6 @@
             <div class="down-content">
               <h4>History</h4>
               <p>Investigates past events, societies, and cultures to understand their impact on the present and future.</p>
-              <div class="text-button-free">
-                <a href="#">Free <i class="fa fa-angle-double-right"></i></a>
-              </div>
             </div>
           </div>
           <div class="item">
@@ -225,9 +171,6 @@
             <div class="down-content">
               <h4>Music</h4>
               <p>Develops skills in creating, performing, and appreciating sound and rhythm while exploring diverse music.</p>
-              <div class="text-button-pay">
-                <a href="#">Pay <i class="fa fa-angle-double-right"></i></a>
-              </div>
             </div>
           </div>
         </div>
