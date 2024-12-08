@@ -222,18 +222,22 @@ def scores():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
+    # Get quiz results from the session (only if user just finished the quiz)
+    correct_count = session.pop('correct_count', None)  # Remove from session after use
+    total_questions = session.pop('total_questions', None)  # Remove from session after use
 
-    correct_count = session.get('correct_count', 0)
-    total_questions = session.get('total_questions', 10)
+    # If quiz results exist, flash a message to display on the dashboard
+    if correct_count is not None and total_questions is not None:
+        flash(f'Congratulations! You just finished your quiz. Score: {correct_count} / {total_questions}', 'success')
 
-    new_score = Score(user_id=current_user.id, score=correct_count, total_questions=total_questions)
-    db.session.add(new_score)
-    db.session.commit()
+        # Save score in the database
+        new_score = Score(user_id=current_user.id, score=correct_count, total_questions=total_questions)
+        db.session.add(new_score)
+        db.session.commit()
 
+    # Clear remaining quiz-related session data
     session.pop('quiz_questions', None)
     session.pop('current_question_index', None)
-    session.pop('correct_count', None)
-    session.pop('total_questions', None)
 
     # Categories and difficulties for the form
     categories = [
@@ -249,17 +253,15 @@ def dashboard():
     difficulties = ["easy", "medium", "hard"]
 
     if request.method == 'POST':
-        # Get the selected category and difficulty from the form
         selected_category = request.form.get('category')
         selected_difficulty = request.form.get('difficulty')
 
-        # Save selections in session
         if selected_category and selected_difficulty:
             session['selected_category'] = selected_category
             session['selected_difficulty'] = selected_difficulty
             return redirect(url_for('quiz'))
         else:
-            flash('Please select both a category and difficulty.')
+            flash('Please select both a category and difficulty.', 'error')
 
     # Leaderboard data
     leaderboard = (
@@ -270,7 +272,16 @@ def dashboard():
         .all()
     )
 
-    return render_template('dashboard.html', categories=categories, difficulties=difficulties, leaderboard=leaderboard, enumerate=enumerate)
+    return render_template(
+        'dashboard.html', 
+        categories=categories, 
+        difficulties=difficulties, 
+        leaderboard=leaderboard, 
+        enumerate=enumerate
+    )
+
+
+
 
 # Start route
 @app.route('/start')
