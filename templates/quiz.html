@@ -68,6 +68,36 @@
         .question-container {
             text-align: center;
         }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .feedback.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .hint-button {
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .hint-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 
@@ -77,7 +107,7 @@
         <h2 class="text-center">Quiz Time!</h2>
         <div class="progress mb-4">
             <div class="progress-bar" id="progressBar"
-                style="width: {{ (current_question / total_questions) * 100  - 10}}%"></div>
+                style="width: {{ (current_question / total_questions) * 100 - 10 }}%"></div>
         </div>
 
         <form method="POST" action="{{ url_for('quiz') }}">
@@ -96,7 +126,6 @@
             </div>
 
             <center>
-
                 <button type="submit" class="btn btn-light">
                     {% if current_question == total_questions %}
                     Finish
@@ -104,115 +133,74 @@
                     Next
                     {% endif %}
                 </button>
+            </center>
         </form>
+
+        {% if feedback %}
+        <div class="feedback {% if 'correct' in feedback %}correct{% else %}incorrect{% endif %}">
+            <p>{{ feedback }}</p>
+        </div>
+        {% endif %}
 
         <div class="text-center mt-4">
             <p>Question {{ current_question }} of {{ total_questions }}</p>
         </div>
-    </div>
-    </center>
 
-    <!-- JavaScript -->
-    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <!-- Hint Button -->
+        <button class="hint-button" onclick="getHint()">Need a Hint?</button>
 
-    <script>
-        var selectedOption = null;
+        <!-- Container to display the hint -->
+        <div id="hint-container" class="text-center mt-4" style="display: none;">
+            <p id="hint-text"></p>
+        </div>
 
-        function selectOption(index) {
-            if (selectedOption !== null) {
-                document.getElementById("option_" + selectedOption).classList.remove("selected");
-                document.getElementById("radio_" + selectedOption).checked = false;
+        <script>
+            // Function to fetch the hint from the Flask route
+            function getHint() {
+                var question = "{{ question }}";  // Pass the current question to the hint request
+                fetch(`{{ url_for('quiz') }}?hint=true`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Display the hint
+                        var hintText = data.hint;
+                        document.getElementById('hint-text').textContent = "Hint: " + hintText;
+                        document.getElementById('hint-container').style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching hint:', error);
+                    });
             }
+        </script>
 
-            selectedOption = index;
-            document.getElementById("option_" + index).classList.add("selected");
-            document.getElementById("radio_" + index).checked = true;
-        }
 
-        function updateProgressBar(currentQuestion, totalQuestions) {
-            var progress = ((currentQuestion / totalQuestions) * 100) - 10;
-            if (progress > 100) {
-                progress = 100; // Ensure the progress doesn't exceed 100%
-            }
-            document.getElementById("progressBar").style.width = progress + "%";
-        }
+        <!-- JavaScript -->
+        <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-        updateProgressBar();
-    </script>
+        <script>
+            var selectedOption = null;
 
-    <!-- Add these scripts just before the closing </body> tag in your quiz.html -->
-    <script>
-        // Anti-Cheat Mechanism
-        (function () {
-            let quizStartTime = Date.now();
-            let warningCount = 0;
-            const MAX_WARNINGS = 3;
-
-            // Function to handle visibility changes
-            function handleVisibilityChange() {
-                if (document.hidden) {
-                    warningCount++;
-
-                    // Show warning modal
-                    const warningModal = document.createElement('div');
-                    warningModal.innerHTML = `
-                        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px;">
-                            <div>
-                                <h2>Warning!</h2>
-                                <p>Switching tabs or windows is not allowed during the quiz.</p>
-                                <p>Warning ${warningCount} of ${MAX_WARNINGS}</p>
-                                <p>Continuing to switch tabs may result in quiz termination.</p>
-                                <button onclick="this.closest('div').remove();" class="btn btn-danger">Continue Quiz</button>
-                            </div>
-                        </div>
-                    `;
-                    document.body.appendChild(warningModal);
-
-                    // If user exceeds max warnings, submit the form to end the quiz
-                    if (warningCount >= MAX_WARNINGS) {
-                        alert('Too many tab/window switches. Your quiz will now end.');
-                        document.querySelector('form').action = "{{ url_for('results') }}";
-                        document.querySelector('form').submit();
-                    }
+            function selectOption(index) {
+                if (selectedOption !== null) {
+                    document.getElementById("option_" + selectedOption).classList.remove("selected");
+                    document.getElementById("radio_" + selectedOption).checked = false;
                 }
+
+                selectedOption = index;
+                document.getElementById("option_" + index).classList.add("selected");
+                document.getElementById("radio_" + index).checked = true;
             }
 
-            // Track if user switches tabs/windows
-            document.addEventListener("visibilitychange", handleVisibilityChange);
-
-            // Prevent right-click context menu
-            document.addEventListener('contextmenu', function (e) {
-                e.preventDefault();
-                alert('Right-click is disabled during the quiz.');
-            });
-
-            // Prevent copy-paste
-            document.addEventListener('copy', function (e) {
-                e.preventDefault();
-                alert('Copy-paste is not allowed during the quiz.');
-            });
-
-            // Detect if user tries to leave the page
-            window.addEventListener('beforeunload', function (e) {
-                const timeSpent = (Date.now() - quizStartTime) / 1000; // seconds
-
-                // If quiz has been ongoing for more than 10 seconds, show warning
-                if (timeSpent > 10) {
-                    e.preventDefault(); // Cancel the event
-                    e.returnValue = ''; // Display a default message in some browsers
+            function updateProgressBar(currentQuestion, totalQuestions) {
+                var progress = ((currentQuestion / totalQuestions) * 100) - 10;
+                if (progress > 100) {
+                    progress = 100; // Ensure the progress doesn't exceed 100%
                 }
-            });
-        })();
+                document.getElementById("progressBar").style.width = progress + "%";
+            }
 
-        // Extend existing selectOption function to work with anti-cheat
-        function extendedSelectOption(index) {
-            selectOption(index);
-
-            // Optional: Add additional tracking or logging if needed
-            console.log(`Option ${index} selected`);
-        }
-    </script>
+            updateProgressBar();
+        </script>
 </body>
 
 </html>

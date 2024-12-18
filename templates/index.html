@@ -1,276 +1,262 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <link rel="icon" href="/static/images/owl logo.png" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet"/>
 
-    <title>Your Classroom</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="icon" href="/static/images/owl logo.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900"
+    rel="stylesheet" />
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="/static/vendor/bootstrap/css/bootstrap.min.css">
+  <title>Your Classroom</title>
 
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="/static/css/fontawesome.css">
-    <link rel="stylesheet" href="/static/css/templatemo-grad-school.css" />
-    <link rel="stylesheet" href="/static/css/owl.css" />
-    <link rel="stylesheet" href="/static/css/lightbox.css" />
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/static/vendor/bootstrap/css/bootstrap.min.css">
 
-  </head>
+  <!-- Additional CSS Files -->
+  <link rel="stylesheet" href="/static/css/fontawesome.css">
+  <link rel="stylesheet" href="/static/css/templatemo-grad-school.css" />
+  <link rel="stylesheet" href="/static/css/owl.css" />
+  <link rel="stylesheet" href="/static/css/lightbox.css" />
 
-  <body>
-    <!--header-->
-    <header class="main-header clearfix" role="header" style="display: flex; flex-direction: row">
-      <div class="Name" style="width: 100%; display: flex; align-items: center">
-        <div class="logo" style="width: 33vw">
-          <a href="{{url_for('start')}}"><img src="/static/images/owl logo.png" alt="" style="width: 60px"/></a>
-        </div>
-        <h1 style=" width: 33vw;font-style: normal; color: #f5a425; font-style: italic; font-size: 46px; font-weight: 800; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; display: flex; align-items: center; justify-content: center;">The Owls</h1>
+</head>
+
+<body>
+  <!--header-->
+  <header class="main-header clearfix" role="header" style="display: flex; flex-direction: row">
+    <div class="Name" style="width: 100%; display: flex; align-items: center">
+      <div class="logo" style="width: 33vw">
+        <a href="{{url_for('start')}}"><img src="/static/images/owl logo.png" alt="" style="width: 60px" /></a>
       </div>
-    </header>
+      <h1
+        style=" width: 33vw;font-style: normal; color: #f5a425; font-style: italic; font-size: 46px; font-weight: 800; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; display: flex; align-items: center; justify-content: center;">
+        The Owls</h1>
+    </div>
+  </header>
 
-    <!-- ***** Main Banner Area Start ***** -->
-    <section class="section main-banner" id="top" data-section="section1">
-      <video autoplay muted loop id="bg-video">
-        <source src="/static/images/course-video.mp4" type="video/mp4"/>
-      </video>
+  <!-- ***** Main Banner Area Start ***** -->
+  <section class="section main-banner" id="top" data-section="section1">
+    <video autoplay muted loop id="bg-video">
+      <source src="/static/images/course-video.mp4" type="video/mp4" />
+    </video>
 
-      <div class="video-overlay header-text">
-        <div class="caption">
-          <h2><em>Your</em> Classroom</h2>
-          <div
-            class="a"
-            style="
+    <div class="video-overlay header-text">
+      <div class="caption">
+        <h2><em>Your</em> Classroom</h2>
+        <div class="a" style="
               display: flex;
               width: 80vw;
               flex-direction: row;
               justify-content: center;
               align-items: center;">
-            <div
-              class="main-button"
-              style="
+          <div class="main-button" style="
                 display: flex;
                 flex-direction: row;
                 justify-content: space-evenly;
                 align-items: center;
                 width: 70%;">
-              <div class="scroll-to-section">
-                <a style="width: 200px" href="{{url_for('login')}}">Log In</a>
-              </div>
-              <div class="scroll-to-section">
-                <a style="width: 200px; color: black; background-color: white" href="{{url_for('register')}}">Register</a>
-              </div>
+            <div class="scroll-to-section">
+              <a style="width: 200px" href="{{url_for('login')}}">Log In</a>
+            </div>
+            <div class="scroll-to-section">
+              <a style="width: 200px; color: black; background-color: white" href="{{url_for('register')}}">Register</a>
             </div>
           </div>
         </div>
       </div>
-    </section>
-    <!-- ***** Main Banner Area End ***** -->
-    <section class="section why-us" data-section="section2">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="section-heading">
-              <h2>Contributors</h2>
+    </div>
+  </section>
+  <!-- ***** Main Banner Area End ***** -->
+  <section class="section why-us" data-section="section2">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="section-heading">
+            <h2>Contributors</h2>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div id="tabs">
+            <ul>
+              <li><a href="#tabs-1">Erten Preljevic</a></li>
+              <li><a href="#tabs-2">Ermin Muslic</a></li>
+              <li><a href="#tabs-3">Denis Dolovac</a></li>
+            </ul>
+            <section class="tabs-content">
+              <article id="tabs-1">
+                <div class="row">
+                  <div class="col-md-6">
+                    <img src="/static/images/erten.jpg" alt="" />
+                  </div>
+                  <div class="col-md-6">
+                    <h4>Erten Preljevic</h4>
+                    <p>
+                    </p>
+                  </div>
+                </div>
+              </article>
+              <article id="tabs-2">
+                <div class="row">
+                  <div class="col-md-6">
+                    <img src="/static/images/ermin.jpg" alt="" />
+                  </div>
+                  <div class="col-md-6">
+                    <h4>Ermin Muslic</h4>
+                    <p>
+                    </p>
+                  </div>
+                </div>
+              </article>
+              <article id="tabs-3">
+                <div class="row">
+                  <div class="col-md-6">
+                    <img src="/static/images/denis.jpg" alt="" />
+                  </div>
+                  <div class="col-md-6">
+                    <h4>Denis Dolovac</h4>
+                    <p>
+                    </p>
+                  </div>
+                </div>
+              </article>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section courses" data-section="section4">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="section-heading">
+            <h2>Choose Your Specialty</h2>
+          </div>
+        </div>
+        <div class="owl-carousel owl-theme">
+          <div class="item">
+            <img src="/static/images/General Knowlege.jpg" alt="Course #1" />
+            <div class="down-content">
+              <h4>General Knowlege</h4>
+              <p>
+                Broadens understanding across various topics, including
+                culture, current events, and practical life skills.
+              </p>
             </div>
           </div>
-          <div class="col-md-12">
-            <div id="tabs">
-              <ul>
-                <li><a href="#tabs-1">Erten Preljevic</a></li>
-                <li><a href="#tabs-2">Ermin Muslic</a></li>
-                <li><a href="#tabs-3">Denis Dolovac</a></li>
-              </ul>
-              <section class="tabs-content">
-                <article id="tabs-1">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <img src="/static/images/choose-us-image-01.png" alt="" />
-                    </div>
-                    <div class="col-md-6">
-                      <h4>Erten Preljevic</h4>
-                      <p>
-                        Grad School is free educational HTML template with
-                        Bootstrap 4.5.2 CSS layout. Feel free to use it for
-                        educational or commercial purposes. You may want to make
-                        to TemplateMo. Please tell your friends about us. Thank you.
-                      </p>
-                    </div>
-                  </div>
-                </article>
-                <article id="tabs-2">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <img src="/static/images/choose-us-image-02.png" alt="" />
-                    </div>
-                    <div class="col-md-6">
-                      <h4>Ermin Muslic</h4>
-                      <p>
-                        You can modify this HTML layout by editing contents and
-                        adding more pages as you needed. Since this template has
-                        options to add dropdown menus, you can put many HTML
-                        pages.
-                        Suspendisse tincidunt, magna ut finibus rutrum, libero
-                        dolor euismod odio, nec interdum quam felis non ante.
-                      </p>
-                    </div>
-                  </div>
-                </article>
-                <article id="tabs-3">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <img src="/static/images/choose-us-image-03.png" alt="" />
-                    </div>
-                    <div class="col-md-6">
-                      <h4>Denis Dolovac</h4>
-                      <p>
-                        You are NOT allowed to redistribute this template ZIP
-                        file on any template collection website. However, you
-                        can use this template to convert into a specific theme
-                        for any kind of CMS platform such as WordPress. For more
-                        information, you shall contact TemplateMo now.
-                      </p>
-                    </div>
-                  </div>
-                </article>
-              </section>
+          <div class="item">
+            <img src="/static/images/Mathemathics.jpg" alt="Course #2" />
+            <div class="down-content">
+              <h4>Mathematics</h4>
+              <p>
+                Enhances logical reasoning and quantitative skills through the
+                study of numbers, shapes, and patterns.
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="/static/images/Science.jpg" alt="Course #3" />
+            <div class="down-content">
+              <h4>Science</h4>
+              <p>
+                Explores the natural world through observation,
+                experimentation, and analysis through tests.
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="/static/images/courses-04.jpg" alt="Course #4" />
+            <div class="down-content">
+              <h4>Books</h4>
+              <p>
+                Expand knowledge, imagination, and empathy by exploring
+                diverse stories, ideas, and perspectives.
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="/static/images/Computer Science.jpg" alt="" />
+            <div class="down-content">
+              <h4>Computer Science</h4>
+              <p>
+                Teaches problem-solving using programming, algorithms, and
+                systems, shaping innovation in technology.
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="/static/images/Art.jpg" alt="" />
+            <div class="down-content">
+              <h4>Art</h4>
+              <p>
+                Encourages creativity and self-expression through visual,
+                performing, and applied artistic mediums.
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="/static/images/Sport.jpg" alt="" />
+            <div class="down-content">
+              <h4>Sports</h4>
+              <p>
+                Promotes physical health, teamwork, and discipline through
+                structured physical activities and games.
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="/static/images/Geography.jpg" alt="" />
+            <div class="down-content">
+              <h4>Geography</h4>
+              <p>
+                Examines Earth's landscapes, environments, and human
+                interactions with nature and resources.
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="/static/images/History.jpg" alt="" />
+            <div class="down-content">
+              <h4>History</h4>
+              <p>
+                Investigates past events, societies, and cultures to
+                understand their impact on the present and future.
+              </p>
+            </div>
+          </div>
+          <div class="item">
+            <img src="/static/images/Music.jpg" alt="" />
+            <div class="down-content">
+              <h4>Music</h4>
+              <p>
+                Develops skills in creating, performing, and appreciating
+                sound and rhythm while exploring diverse music.
+              </p>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="section courses" data-section="section4">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="section-heading">
-              <h2>Choose Your Specialty</h2>
-            </div>
-          </div>
-          <div class="owl-carousel owl-theme">
-            <div class="item">
-              <img src="/static/images/General Knowlege.jpg" alt="Course #1" />
-              <div class="down-content">
-                <h4>General Knowlege</h4>
-                <p>
-                  Broadens understanding across various topics, including
-                  culture, current events, and practical life skills.
-                </p>
-              </div>
-            </div>
-            <div class="item">
-              <img src="/static/images/Mathemathics.jpg" alt="Course #2" />
-              <div class="down-content">
-                <h4>Mathematics</h4>
-                <p>
-                  Enhances logical reasoning and quantitative skills through the
-                  study of numbers, shapes, and patterns.
-                </p>
-              </div>
-            </div>
-            <div class="item">
-              <img src="/static/images/Science.jpg" alt="Course #3" />
-              <div class="down-content">
-                <h4>Science</h4>
-                <p>
-                  Explores the natural world through observation,
-                  experimentation, and analysis through tests.
-                </p>
-              </div>
-            </div>
-            <div class="item">
-              <img src="/static/images/courses-04.jpg" alt="Course #4" />
-              <div class="down-content">
-                <h4>Books</h4>
-                <p>
-                  Expand knowledge, imagination, and empathy by exploring
-                  diverse stories, ideas, and perspectives.
-                </p>
-              </div>
-            </div>
-            <div class="item">
-              <img src="/static/images/Computer Science.jpg" alt="" />
-              <div class="down-content">
-                <h4>Computer Science</h4>
-                <p>
-                  Teaches problem-solving using programming, algorithms, and
-                  systems, shaping innovation in technology.
-                </p>
-              </div>
-            </div>
-            <div class="item">
-              <img src="/static/images/Art.jpg" alt="" />
-              <div class="down-content">
-                <h4>Art</h4>
-                <p>
-                  Encourages creativity and self-expression through visual,
-                  performing, and applied artistic mediums.
-                </p>
-              </div>
-            </div>
-            <div class="item">
-              <img src="/static/images/Sport.jpg" alt="" />
-              <div class="down-content">
-                <h4>Sports</h4>
-                <p>
-                  Promotes physical health, teamwork, and discipline through
-                  structured physical activities and games.
-                </p>
-              </div>
-            </div>
-            <div class="item">
-              <img src="/static/images/Geography.jpg" alt="" />
-              <div class="down-content">
-                <h4>Geography</h4>
-                <p>
-                  Examines Earth's landscapes, environments, and human
-                  interactions with nature and resources.
-                </p>
-              </div>
-            </div>
-            <div class="item">
-              <img src="/static/images/History.jpg" alt="" />
-              <div class="down-content">
-                <h4>History</h4>
-                <p>
-                  Investigates past events, societies, and cultures to
-                  understand their impact on the present and future.
-                </p>
-              </div>
-            </div>
-            <div class="item">
-              <img src="/static/images/Music.jpg" alt="" />
-              <div class="down-content">
-                <h4>Music</h4>
-                <p>
-                  Develops skills in creating, performing, and appreciating
-                  sound and rhythm while exploring diverse music.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+  <footer>
+    <div class="container">
+      <div class="row"></div>
+    </div>
+  </footer>
 
-    <footer>
-      <div class="container">
-        <div class="row"></div>
-      </div>
-    </footer>
+  <script src="/static/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/isotope.min.js"></script>
+  <script src="/static/js/owl-carousel.js"></script>
+  <script src="/static/js/owl-carousel.js"></script>
+  <script src="/static/js/lightbox.js"></script>
+  <script src="/static/js/tabs.js"></script>
+  <script src="/static/js/video.js"></script>
+  <script src="/static/js/slick-slider.js"></script>
+  <script src="/static/js/custom.js"></script>
 
-    <script src="/static/vendor/jquery/jquery.min.js"></script>
-    <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/static/js/isotope.min.js"></script>
-    <script src="/static/js/owl-carousel.js"></script>
-    <script src="/static/js/owl-carousel.js"></script>
-    <script src="/static/js/lightbox.js"></script>
-    <script src="/static/js/tabs.js"></script>
-    <script src="/static/js/video.js"></script>
-    <script src="/static/js/slick-slider.js"></script>
-    <script src="/static/js/custom.js"></script>
+</body>
 
-  </body>
 </html>
